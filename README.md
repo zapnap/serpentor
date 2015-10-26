@@ -1,8 +1,7 @@
 # Serpentor
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/serpentor`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple utility to check search engine result rankings for a given set of keywords.
+Right now only Google search is supported.
 
 ## Installation
 
@@ -22,13 +21,30 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run an individual keyword test:
 
-## Development
+```ruby
+rank = Serpentor::Rank.check('SOSV', 'sosv.com')
+puts "Rank is #{rank.value} (#{rank.url})"
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
+Or configure a bulk keyword test:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+config = Serpentor.configure do |config|
+  config.keywords = ["keyword1", "keyword2"]
+  config.host = "my-site.com"
+  config.limit = 10 # only care if result is on first page
+end
+
+results = Serpentor.rank
+results.each do |res|
+  puts "Rank for '#{res.keyword}' is #{res.rank || 'N/A'} (#{res.url})"
+end
+```
+
+The first 5 pages (50 results) are checked by default. You can further limit
+that number, for example, if you only care about first page results.
 
 ## Contributing
 
